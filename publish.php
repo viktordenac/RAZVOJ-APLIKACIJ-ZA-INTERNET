@@ -46,12 +46,34 @@ if(isset($_POST["submit"])){
 		$error = "Prišlo je do našpake pri objavi oglasa.";
 	}
 }
+
 ?>
 	<h2>Objavi oglas</h2>
 	<form action="publish.php" method="POST" enctype="multipart/form-data">
 		<label>Naslov</label><input type="text" name="title" /> <br/>
 		<label>Vsebina</label><textarea name="description" rows="10" cols="50"></textarea> <br/>
 		<label>Slika</label><input type="file" name="image" /> <br/>
+        <td><label>Category</label></td>
+        <td><input list="kategorije" name="category">
+            <select>
+                <datalist id="kategorija">
+                    <?php
+                    global $conn;
+                    $categories = array();
+                    $query = "SELECT naziv FROM kategorije";
+                    $res = $conn->query($query);
+                    while ($note = $res->fetch_object()){
+                        array_push($categories,$note);
+                    }
+                    foreach ($categories as $category){
+                        echo "<option value=\"$category->naziv\"/>";
+                    }
+                    ?>
+                </datalist>
+            </select>
+
+        </td>
+
 		<input type="submit" name="submit" value="Objavi" /> <br/>
 		<label><?php echo $error; ?></label>
 	</form>
