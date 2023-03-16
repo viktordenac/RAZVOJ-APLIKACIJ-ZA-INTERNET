@@ -26,7 +26,6 @@ CREATE TABLE IF NOT EXISTS `ads` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` text COLLATE utf8_slovenian_ci NOT NULL,
   `description` text COLLATE utf8_slovenian_ci NOT NULL,
-  -- `kategorija` text COLLATE utf8_slovenian_ci NOT NULL,
   'lastUpdate' DATE NOT NULL,
   `user_id` int(11) NOT NULL,
   `image` longblob NOT NULL,
