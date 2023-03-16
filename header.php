@@ -26,7 +26,7 @@
 				?>
 				<li><a href="publish.php">Objavi oglas</a></li>
 				<li><a href="logout.php">Odjava</a></li>
-                <li><a href="publishEdit.php">Uredi oglas</a></li>
+                <li><a href="myAds.php">Moji Oglasi</a></li>
 				<?php
 			} else{
 				?>
