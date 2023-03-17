@@ -68,10 +68,8 @@ if (isset($_POST["submit"])) {
             <input list="ads" name="category">
             <datalist id="ads">
                 <?php
-                $counter = 1;
                 foreach ($categories as $category) {
-                    echo "<option value=\"$counter $category->Value\"/>";
-                    $counter++;
+                    echo "<option value=\"$category->id $category->Value\"/>";
                 }
                 ?>
             </datalist>
