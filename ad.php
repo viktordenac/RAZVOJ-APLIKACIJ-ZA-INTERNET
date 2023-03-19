@@ -21,10 +21,10 @@ if(!isset($_COOKIE['userAdVisit'.$id])){
     // Count only the views from logged-in users
         if(isset($_SESSION["USER_ID"])){
             $user_id = $_SESSION["USER_ID"];
-            $views = "SELECT views FROM ads";
+            $views = "SELECT views FROM ads WHERE ads.id = $id;";
             $resViews = $conn->query($views);
             $view = $resViews->fetch_object()->views;
-            $query = "UPDATE ads SET views = $view+1";
+            $query = "UPDATE ads SET views = $view+1 WHERE ads.id = $id;";
             $conn->query($query);
             setcookie("userAdVisits", $user_id);
         }

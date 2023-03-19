@@ -34,7 +34,7 @@ if(isset($_POST['edit'])){
     if($_FILES['image']['name'] != '') {
         $image_path = 'images/' . $_FILES['image']['name'];
         move_uploaded_file($_FILES['image']['tmp_name'], $image_path);
-        $query = "UPDATE ads SET title='$title', description='$description', image='$image_path' WHERE id='$id', fk_idCategory='$category[0]'";
+        $query = "UPDATE ads SET title='$title', description='$description', image='$image_path', fk_idCategory='$category[0]' WHERE id='$id'";
     } else {
         $query = "UPDATE ads SET title='$title', description='$description', fk_idCategory='$category[0]' WHERE id='$id'";
     }
@@ -63,8 +63,8 @@ if(isset($_POST['edit'])){
             <?php
             foreach ($categories as $category) {
                 $selected = "";
-                if($category->id == $ad->fk_idCategory){
-                    echo "<input list='ads' name='category' value=\"$category->id $category->Value\"/>";
+                if($category->idCat == $ad->fk_idCategory){
+                    echo "<input list='ads' name='category' value=\"$category->idCat $category->Value\"/>";
                     break;
                 }
             }
@@ -73,7 +73,7 @@ if(isset($_POST['edit'])){
             <datalist id="ads">
                 <?php
                 foreach ($categories as $category) {
-                    echo "<option value=\"$category->id $category->Value\"/>";
+                    echo "<option value=\"$category->idCat $category->Value\"/>";
                 }
                 ?>
             </datalist>
