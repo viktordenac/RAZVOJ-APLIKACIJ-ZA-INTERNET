@@ -5,7 +5,9 @@ include_once('header.php');
 function get_ads(){
 	global $conn;
 	$query = "SELECT id, title, description, lastUpdate, user_id, image, category.Value FROM ads 
-    JOIN category ON ads.fk_idCategory = category.idCat;";
+    JOIN category ON ads.fk_idCategory = category.idCat
+    GROUP BY ads.id
+	ORDER BY ads.id DESC;";
 	$res = $conn->query($query);
 	$ads = array();
 	while($ad = $res->fetch_object()){

@@ -34,25 +34,10 @@ function get_rows($select)
 $ads = get_ads();
 ?> <label>Category
         <input list="cat" name="category">
-        <datalist id="cat">
-            <?php
-            $counter = 1;
-            foreach ($categories as $category){
-                echo "<option value=\"$counter $category->type\"/>";
-                $counter++;
-            }
-            ?>
-        </datalist>
 <?php
 
 $oglasi = get_ads();
 foreach($oglasi as $oglas){
-    //vodenj ogledov
-    if (isset($_SESSION['views']))
-        $_SESSION['views'] = $_SESSION['views'] + 1;
-    else
-        $_SESSION['views'] = 1;
-    echo "views = " . $_SESSION['views'];
     ?>
     <div class="oglas">
         <h4><?php echo $oglas->title;?></h4>
