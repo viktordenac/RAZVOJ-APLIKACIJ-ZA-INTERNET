@@ -19,6 +19,10 @@ if(isset($_POST["submit"])){
 	if(($user_id = validate_login($_POST["username"], $_POST["password"])) >= 0){
 		//Zapomni si prijavljenega uporabnika v seji in preusmeri na index.php
 		$_SESSION["USER_ID"] = $user_id;
+        $cookie_name = "userAdVisits";
+        $cookie_value = $user_id;
+        setcookie($cookie_name, $cookie_value);
+
 		header("Location: index.php");
 		die();
 	} else{

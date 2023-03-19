@@ -16,8 +16,11 @@ function publish($title, $desc, $img, $category)
     //Pripravimo byte array za pisanje v bazo (v polje tipa LONGBLOB)
     $img_file = mysqli_real_escape_string($conn, $img_file);
 
+    $image_path = 'images/' . $_FILES['image']['name'];
+    move_uploaded_file($_FILES['image']['tmp_name'], $image_path);
+
     $query = "INSERT INTO ads (title, description, lastUpdate , user_id, image, fk_idCategory)
-				VALUES('$title', '$desc', CURRENT_TIMESTAMP, '$user_id', '$img_file', $idCategory);";
+				VALUES('$title', '$desc', CURRENT_TIMESTAMP, '$user_id', '$image_path', $idCategory);";
     if ($conn->query($query)) {
         return true;
     } else {
