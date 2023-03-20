@@ -39,7 +39,7 @@ foreach($ads as $ad){
 	<div class="ad">
         <div class="container-fluid">
 		<h4><?php echo $ad->title;?></h4>
-		<p><?php echo "Opis: ".$ad->description;?></p>
+		<p><?php echo "<b>Opis: </b>".$ad->description;?></p>
         <p> <b>Kategorija:</b>
             <?php
             echo implode(", ", get_categories($ad));

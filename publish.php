@@ -1,29 +1,40 @@
 <?php
 include_once('header.php');
-$error = "";
-$categories = get_rows("SELECT * FROM category");
-// Funkcija vstavi nov oglas v bazo. Preveri tudi, ali so podatki pravilno izpolnjeni. 
+
+// Funkcija vstavi nov oglas v bazo. Preveri tudi, ali so podatki pravilno izpolnjeni.
 // Vrne false, če je prišlo do napake oz. true, če je oglas bil uspešno vstavljen.
-function publish($title, $desc, $img, $category)
-{
+function publish($title, $desc, $img, $categories){
     global $conn;
     $title = mysqli_real_escape_string($conn, $title);
     $desc = mysqli_real_escape_string($conn, $desc);
+    # $category = mysqli_real_escape_string($conn, $categories);
     $user_id = $_SESSION["USER_ID"];
-    $idCategory = $category[0];
-    //Preberemo vsebino (byte array) slike
-    $img_file = file_get_contents($img["tmp_name"]);
-    //Pripravimo byte array za pisanje v bazo (v polje tipa LONGBLOB)
-    $img_file = mysqli_real_escape_string($conn, $img_file);
+
+
+
+    $categoryIDs = array();
+    foreach ($categories as $category) {
+        $categoryQuery = "SELECT idCat FROM category WHERE value = '$category'";
+        $categoryResult = mysqli_query($conn, $categoryQuery);
+        $categoryRow = mysqli_fetch_assoc($categoryResult);
+        $categoryIDs[] = $categoryRow['idCat'];
+    }
 
     $image_path = 'images/' . $_FILES['image']['name'];
     move_uploaded_file($_FILES['image']['tmp_name'], $image_path);
 
-    $query = "INSERT INTO ads (title, description, lastUpdate , user_id, image, fk_idCategory)
-				VALUES('$title', '$desc', CURRENT_TIMESTAMP, '$user_id', '$image_path', $idCategory);";
-    if ($conn->query($query)) {
+    $query = "INSERT INTO ads (title, description, lastUpdate, user_id, image, views)
+				VALUES('$title', '$desc',CURRENT_TIMESTAMP , '$user_id', '$image_path', 0);";
+
+    if($conn->query($query)){
+        $ad_id = mysqli_insert_id($conn);
+        foreach ($categoryIDs as $categoryID) {
+            $query = "INSERT INTO ads_categories (fk_idAds, fk_idCategory) VALUES ('$ad_id', '$categoryID');";
+            $conn->query($query);
+        }
         return true;
-    } else {
+    }
+    else{
         //Izpis MYSQL napake z: echo mysqli_error($conn);
         return false;
     }
@@ -40,46 +51,59 @@ function publish($title, $desc, $img, $category)
     */
 }
 
-function get_rows($select)
-{
+function getCategory() {
     global $conn;
-    $query = $select;
+    $query = "SELECT value FROM category";
     $res = $conn->query($query);
-    $rows = array();
-    while ($row = $res->fetch_object()) {
-        array_push($rows, $row);
+
+    $myArr = array();
+    while($row = mysqli_fetch_assoc($res)) {
+        $myArr[] = $row["value"];
     }
-    return $rows;
+    # print_r($myArr);
+    return $myArr;
 }
 
-if (isset($_POST["submit"])) {
-    if (publish($_POST["title"], $_POST["description"], $_FILES["image"], $_POST["category"])) {
+$error = "";
+if(isset($_POST["submit"])){
+    if(publish($_POST["title"], $_POST["description"], $_FILES["image"], $_POST["categories"])){
         header("Location: index.php");
         die();
-    } else {
+    }
+    else{
         $error = "Prišlo je do našpake pri objavi oglasa.";
     }
 }
-
 ?>
-    <h2>Objavi oglas</h2>
-    <form action="publish.php" method="POST" enctype="multipart/form-data">
-        <label>Naslov</label><input type="text" name="title"/> <br/>
-        <label>Vsebina</label><textarea name="description" rows="10" cols="50"></textarea> <br/>
-        <label>Slika</label><input type="file" name="image"/> <br/>
-        <label>Category
-            <input list="ads" name="category">
-            <datalist id="ads">
-                <?php
-                foreach ($categories as $category) {
-                    echo "<option value=\"$category->id $category->Value\"/>";
-                }
-                ?>
-            </datalist>
-        </label><br/>
-        <input type="submit" name="submit" value="Objavi"/> <br/>
-        <label><?php echo $error; ?></label>
-    </form>
+    <div class="container-fluid">
+        <h3>Objavi oglas</h3>
+        <form action="publish.php" method="POST" enctype="multipart/form-data">
+            <div class="form-group" style="margin-bottom: -25px;">
+                <label>Naslov</label><input class="form-control form-control-sm" type="text" name="title" /> <br/>
+            </div>
+            <div class="form-group" style="margin-bottom: -20px;">
+                <label>Vsebina</label><textarea class="form-control form-control-sm" name="description" rows="10" cols="50"></textarea> <br/>
+            </div>
+            <div class="form-group" style="margin-bottom: -20px;">
+                <label>Slika</label><input class="form-control form-control-sm" type="file" name="image" /> <br/>
+            </div>
+
+            <div class="form-group" style="margin-bottom: -10px;">
+                <label>Kategorije</label>
+                <select class="form-select form-select-sm" name="categories[]" multiple>
+                    <?php
+                    foreach (getCategory() as $option) {
+                        echo "<option value='" . $option . "'>" . $option . "</option>";
+                    }
+                    ?>
+                </select>
+                <br>
+            </div>
+
+            <input class="btn btn-outline-primary" type="submit" name="submit" value="Objavi" /> <br/>
+            <label><?php echo $error; ?></label>
+        </form>
+    </div>
 <?php
 include_once('footer.php');
 ?>

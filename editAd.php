@@ -1,88 +1,133 @@
 <?php
 include_once('header.php');
 
-global $conn;
-
-// Getting the categories
-$categories = get_rows("SELECT * FROM category");
-function get_rows($select)
-{
+function edit($title, $desc, $img, $categories, $ad_id){
     global $conn;
-    $query = $select;
-    $res = $conn->query($query);
-    $rows = array();
-    while ($row = $res->fetch_object()) {
-        array_push($rows, $row);
+    $title = mysqli_real_escape_string($conn, $title);
+    $desc = mysqli_real_escape_string($conn, $desc);
+    # $category = mysqli_real_escape_string($conn, $categories);
+    $ad_id = mysqli_real_escape_string($conn, $ad_id);
+
+    $user_id = $_SESSION["USER_ID"];
+
+    $categoryIDs = array();
+    foreach ($categories as $category) {
+        $categoryQuery = "SELECT idCat FROM category WHERE value = '$category'";
+        $categoryResult = mysqli_query($conn, $categoryQuery);
+        $categoryRow = mysqli_fetch_assoc($categoryResult);
+        $categoryIDs[] = $categoryRow['idCat'];
     }
-    return $rows;
-}
 
-if(isset($_GET['id'])){
-    $id = $_GET['id'];
-    // Get the ad information from the database
-    $query = "SELECT * FROM ads WHERE id='$id'";
-    $res = $conn->query($query);
-    $ad = $res->fetch_object();
-}
-
-if(isset($_POST['edit'])){
-    $title = $_POST['title'];
-    $description = $_POST['description'];
-    $category = $_POST['category'];
-
-    // Check if the user uploaded a new image
+    # posodobimo oglas v bazi
     if($_FILES['image']['name'] != '') {
         $image_path = 'images/' . $_FILES['image']['name'];
         move_uploaded_file($_FILES['image']['tmp_name'], $image_path);
-        $query = "UPDATE ads SET title='$title', description='$description', image='$image_path', fk_idCategory='$category[0]' WHERE id='$id'";
+        $query = "UPDATE ads SET title='$title', description='$desc', image='$image_path' WHERE id='$ad_id'";
     } else {
-        $query = "UPDATE ads SET title='$title', description='$description', fk_idCategory='$category[0]' WHERE id='$id'";
+        $query = "UPDATE ads SET title='$title', description='$desc' WHERE id='$ad_id'";
     }
-    $conn->query($query);
-    header("Location: myads.php");
+
+    if ($conn->query($query)) {
+        // delete all existing categories for this ad
+        mysqli_query($conn, "DELETE FROM ads_categories WHERE fk_idAds = '$ad_id'");
+
+        // insert new categories for this ad
+        foreach ($categoryIDs as $categoryID) {
+            mysqli_query($conn, "INSERT INTO ads_categories (fk_idAds, fk_idCategory) VALUES ('$ad_id', '$categoryID')");
+        }
+        return true;
+    }
+    else{
+        //Izpis MYSQL napake z: echo mysqli_error($conn);
+        return false;
+    }
 }
 
+function getCategory($selected_id) {
+    global $conn;
+    $query = "SELECT value FROM category ORDER BY idCat = $selected_id DESC";
+    $res = mysqli_query($conn, $query);
+
+    $myArr = array();
+    while($row = mysqli_fetch_assoc($res)) {
+        $myArr[] = $row["value"];
+    }
+    return $myArr;
+}
+
+$error = "";
+if(isset($_GET['id'])) {
+    $ad_id = $_GET['id'];
+    $user_id = $_SESSION['USER_ID'];
+
+    // Pogledamo ce ima user pravice za urejanje objave
+    global $conn;
+    $query = "SELECT * FROM ads WHERE id='$ad_id' AND user_id='$user_id'";
+    $res = mysqli_query($conn, $query);
+    $getAd = mysqli_fetch_assoc($res);
+
+    if(!$getAd) {
+        $error = "Nimate pravic za urejanje objave!";
+    }
+    else {
+        $title = $getAd['title'];
+        $description = $getAd['description'];
+        # $category = $getAd['category_id'];
+
+        $category_query = "SELECT ads_categories.fk_idCategory AS id FROM ads_categories JOIN ads ON ads_categories.fk_idAds=ads.id WHERE ads_categories.fk_idAds = '$ad_id'";
+        $category_result = mysqli_query($conn, $category_query);
+        $category_id = array();
+        while ($row = mysqli_fetch_assoc($category_result)) {
+            $category_id[] = $row['id'];
+        }
+
+        if(isset($_POST["submit"])){
+            if(edit($_POST["title"], $_POST["description"], $_FILES["image"], $_POST["categories"], $ad_id)){
+                header("Location: index.php");
+                die();
+            }
+            else{
+                $error = "Napaka pri urejanju objave.";
+            }
+        }
+    }
+}
+else {
+    $error = "Ni dolocenega idja.";
+}
 
 ?>
-<html>
-<head>
-    <title>Edit an ad</title>
-</head>
-<body>
-<div class="container w-50">
-    <h2>Edit ad</h2>
-    <!-- enctype allows file uploads (image) -->
-    <form action="editAd.php?id=<?php echo $ad->id;?>" method="POST" enctype="multipart/form-data">
-        <label>Naslov:</label>
-        <input class="form-control" type="text" name="title" value="<?php echo $ad->title;?>"/><br><br>
+    <div class="container-fluid">
+        <h3>Uredi objavo</h3>
+        <form action="editAd.php?id=<?php echo $ad_id; ?>" method="POST" enctype="multipart/form-data">
+            <div class="form-group" style="margin-bottom: -25px;">
+                <label>Naslov</label><input class="form-control form-control-sm" value="<?php echo $title ?>" type="text" name="title" /> <br/>
+            </div>
+            <div class="form-group" style="margin-bottom: -20px;">
+                <label>Vsebina</label><textarea class="form-control form-control-sm" name="description" rows="10" cols="50"><?php echo $description ?></textarea> <br/>
+            </div>
+            <div class="form-group" style="margin-bottom: -20px;">
+                <label>Slika</label><input class="form-control form-control-sm" type="file" name="image" /> <br/>
+            </div>
+            <div class="form-group" style="margin-bottom: -10px;">
+                <label>Kategorija:</label>
+                <select class="form-select form-select-sm" name="categories[]" multiple>
+                    <?php
+                    $query = "SELECT * FROM category";
+                    $res = mysqli_query($conn, $query);
 
-        <label>Vsebina:</label>
-        <textarea class="form-control" name="description" rows="10" cols="50"><?php echo $ad->description;?></textarea><br><br>
-
-        <label>Category
-            <?php
-            foreach ($categories as $category) {
-                $selected = "";
-                if($category->idCat == $ad->fk_idCategory){
-                    echo "<input list='ads' name='category' value=\"$category->idCat $category->Value\"/>";
-                    break;
-                }
-            }
-
-            ?>
-            <datalist id="ads">
-                <?php
-                foreach ($categories as $category) {
-                    echo "<option value=\"$category->idCat $category->Value\"/>";
-                }
-                ?>
-            </datalist>
-        </label><br/>
-        <label>Slika:</label>
-        <input class="form-control" type="file" name="image" /><br><br>
-
-        <input type="submit" name="edit" value="Edit" /><br><br>
-    </form>
-</div>
-</body>
-</html>
+                    while($row = mysqli_fetch_assoc($res)) {
+                        $selected = (in_array($row['idCat'], $category_id)) ? 'selected' : '';
+                        echo '<option value="'.$row['value'].'" '.$selected.'>'.$row['value'].'</option>';
+                    }
+                    ?>
+                </select>
+                <br>
+            </div>
+            <input class="btn btn-outline-primary" type="submit" name="submit" value="Spremeni" /> <br/>
+            <label><?php echo $error; ?></label>
+        </form>
+    </div>
+<?php
+include_once('footer.php');
+?>
