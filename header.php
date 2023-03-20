@@ -12,36 +12,56 @@ $conn = new mysqli('localhost', 'root', '', 'vaja1');
 //Nastavi kodiranje znakov, ki se uporablja pri komunikaciji z bazo
 $conn->set_charset("UTF8");
 ?>
-<html>
+<html lang="en">
 <head>
-    <title>Vaja 1</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Seoska Bolha</title>
 </head>
 <body>
 <div class="container-fluid">
     <h1>Oglasnik</h1>
-    <nav>
-        <ul class="list-group">
-            <li class="list-group-item list-group-item-primary"><a href="index.php"
-                                                                   class="text-decoration-none">Domov</a></li>
-            <?php
-            if (isset($_SESSION["USER_ID"])) {
-                ?>
-                <li class="list-group-item"><a href="publish.php" class="text-decoration-none">Objavi oglas</a></li>
-                <li class="list-group-item"><a href="myAds.php" class="text-decoration-none">Moji oglasi</a></li>
-                <li class="list-group-item"><a href="logout.php" class="text-decoration-none">Odjava</a></li>
-                <?php
-            } else {
-                ?>
-                <li class="list-group-item"><a href="login.php" class="text-decoration-none">Prijava</a></li>
-                <li class="list-group-item"><a href="register.php" class="text-decoration-none">Registracija</a></li>
-                <?php
-            }
-            ?>
-        </ul>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.php">Domov</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <?php if (isset($_SESSION["USER_ID"])): ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Oglasi
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="publish.php">Objavi oglas</a></li>
+                                <li><a class="dropdown-item" href="myAds.php">Moji oglasi</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="logout.php">Odjava</a>
+                        </li>
+                    <?php else: ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="login.php">Prijava</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="register.php">Registracija</a>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+            <form class="form-inline my-2 my-lg-0">
+                <p style="color: aqua">Created by Viktor Denac</p>
+            </form>
+        </div>
     </nav>
-</div>
-<hr/>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <hr>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

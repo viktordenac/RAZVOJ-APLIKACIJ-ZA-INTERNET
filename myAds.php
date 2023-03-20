@@ -4,8 +4,6 @@ include_once('header.php');
 $categories = get_rows("SELECT * FROM category");
 function get_ads()
 {
-    //    $query = "SELECT * FROM ads;";
-
     global $conn;
     $ads = array();
     if (isset($_SESSION["USER_ID"])) {
@@ -18,6 +16,7 @@ function get_ads()
     }
     return $ads;
 }
+
 //preberemo vnaprej določene kategorije
 function get_rows($select)
 {
@@ -36,23 +35,23 @@ $ads = get_ads();
 <?php
 
 $oglasi = get_ads();
-foreach($oglasi as $oglas){
+foreach ($oglasi as $oglas) {
     ?>
-<div class="oglas">
-    <div class="container-fluid">
+    <div class="oglas">
+        <div class="container-fluid">
 
-        <h4><?php echo $oglas->title;?></h4>
-        <p><?php echo $oglas->description;?></p>
-		<!-- Redirects to edit.php with the id of the ad -->
+            <h4><?php echo $oglas->title; ?></h4>
+            <p><?php echo $oglas->description; ?></p>
+            <!-- Redirects to edit.php with the id of the ad -->
 
-		<a href="editAd.php?id=<?php echo $oglas->id;?>" class="btn btn-success" role="button" aria-pressed="true">Edit</a>
-		<a href="deleteAd.php?id=<?php echo $oglas->id;?>">
-			<button class="btn btn-danger">Delete</button>
-		</a>
+            <a href="editAd.php?id=<?php echo $oglas->id; ?>" class="btn btn-success" role="button" aria-pressed="true">Edit</a>
+            <a href="deleteAd.php?id=<?php echo $oglas->id; ?>">
+                <button class="btn btn-danger">Delete</button>
+            </a>
+        </div>
     </div>
-</div>
-<hr/>
-<?php
+    <hr/>
+    <?php
 }
 include_once('footer.php');
 ?>

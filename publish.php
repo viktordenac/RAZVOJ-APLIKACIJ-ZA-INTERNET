@@ -76,32 +76,33 @@ if(isset($_POST["submit"])){
 }
 ?>
     <div class="container-fluid">
-        <h3>Objavi oglas</h3>
+        <h3 class="text-center mb-4">Objavi oglas</h3>
         <form action="publish.php" method="POST" enctype="multipart/form-data">
-            <div class="form-group" style="margin-bottom: -25px;">
-                <label>Naslov</label><input class="form-control form-control-sm" type="text" name="title" /> <br/>
+            <div class="form-group mb-3">
+                <label class="form-label"><b>Naslov</b></label>
+                <input class="form-control form-control-sm" type="text" name="title" required>
             </div>
-            <div class="form-group" style="margin-bottom: -20px;">
-                <label>Vsebina</label><textarea class="form-control form-control-sm" name="description" rows="10" cols="50"></textarea> <br/>
+            <div class="form-group mb-3">
+                <label class="form-label"><b>Vsebina</b></label>
+                <textarea class="form-control form-control-sm" name="description" rows="10" cols="50" required></textarea>
             </div>
-            <div class="form-group" style="margin-bottom: -20px;">
-                <label>Slika</label><input class="form-control form-control-sm" type="file" name="image" /> <br/>
+            <div class="form-group mb-3">
+                <label class="form-label"><b>Slika</b></label>
+                <input class="form-control form-control-sm" type="file" name="image" required>
             </div>
-
-            <div class="form-group" style="margin-bottom: -10px;">
-                <label>Kategorije</label>
-                <select class="form-select form-select-sm" name="categories[]" multiple>
-                    <?php
-                    foreach (getCategory() as $option) {
-                        echo "<option value='" . $option . "'>" . $option . "</option>";
-                    }
-                    ?>
+            <div class="form-group mb-3">
+                <label class="form-label"><b>Kategorije</b></label>
+                <select class="form-select form-select-sm" name="categories[]" multiple required>
+                    <?php foreach (getCategory() as $option) { ?>
+                        <option value="<?php echo $option ?>"><?php echo $option ?></option>
+                    <?php } ?>
                 </select>
-                <br>
             </div>
-
-            <input class="btn btn-outline-primary" type="submit" name="submit" value="Objavi" /> <br/>
-            <label><?php echo $error; ?></label>
+            <div class="text-center">
+                <button class="btn btn-primary btn-lg" type="submit" name="submit">Objavi</button>
+                <br>
+                <label class="mt-3"><?php echo $error; ?></label>
+            </div>
         </form>
     </div>
 <?php

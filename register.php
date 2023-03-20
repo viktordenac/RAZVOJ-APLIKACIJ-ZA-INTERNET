@@ -62,39 +62,51 @@ if(isset($_POST["submit"])){
 }
 
 ?>
-	<h2>Registracija</h2>
-	<form action="register.php" method="POST">
-        <table>
-            <tr>
-                <td><label>Uporabniško ime:</label></td>
-                <td><input type="text" name="username" /> <br/></td>
-            </tr>
-            <tr>
-                <td><label>Geslo:</label></td>
-                <td><input type="password" name="password" /> <br/></td>
-            </tr>
-            <tr>
-                <td><label>Ponovi geslo:</label></td>
-                <td><input type="password" name="repeat_password" /> <br/></td>
-            </tr>
-            <tr>
-                <td><label>Naslov:</label></td>
-                <td><input type="naslov" name="naslov" /> <br/></td>
-            </tr>
-            <tr>
-                <td><label>Pošta:</label></td>
-                <td><input type="posta" name="posta" /> <br/></td>
-            </tr>
-            <tr>
-                <td><label>Telefon:</label></td>
-                <td><input type="tel" name="tel" /> <br/></td>
-            </tr>
-            <tr>
-                <td><input type="submit" name="submit" value="Pošlji" /> <br/></td>
-            </tr>
-        </table>
-		<label><?php echo $error; ?></label>
-	</form>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="card shadow-lg border-0 rounded-lg mt-5">
+                    <div class="card-header">
+                        <h2 class="text-center font-weight-light mb-0">Registracija</h2>
+                    </div>
+                    <div class="card-body">
+                        <form action="register.php" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label">Uporabniško ime:</label>
+                                <input class="form-control" type="text" name="username" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Geslo:</label>
+                                <input class="form-control" type="password" name="password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Ponovi geslo:</label>
+                                <input class="form-control" type="password" name="repeat_password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Naslov:</label>
+                                <input class="form-control" type="text" name="naslov" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Pošta:</label>
+                                <input class="form-control" type="text" name="posta" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Telefon:</label>
+                                <input class="form-control" type="tel" name="tel" required>
+                            </div>
+                            <div class="d-grid">
+                                <button class="btn btn-primary btn-block mt-4" type="submit" name="submit">Pošlji</button>
+                            </div>
+                            <div class="text-center mt-3">
+                                <label><?php echo $error; ?></label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php
 include_once('footer.php');
 ?>

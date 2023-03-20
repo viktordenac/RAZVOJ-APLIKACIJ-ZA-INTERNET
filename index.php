@@ -13,7 +13,7 @@ function get_ads(){
 	return $ads;
 }
 // Funkcija prebere potrebne kategorije iz baze ter vrne polje objektov
-function get_categories($ad){
+function get_category($ad){
     $ad_id = $ad->id;
     $query_ad_category = "SELECT fk_idCategory FROM ads_categories WHERE fk_idAds='$ad_id'";
     global $conn;
@@ -42,7 +42,7 @@ foreach($ads as $ad){
 		<p><?php echo "<b>Opis: </b>".$ad->description;?></p>
         <p> <b>Kategorija:</b>
             <?php
-            echo implode(", ", get_categories($ad));
+            echo implode(", ", get_category($ad));
             ?>
         </p>
         <a href="ad.php?id=<?php echo $ad->id;?>" class="btn btn-info" role="button" aria-pressed="true">Preberi več</a>

@@ -30,21 +30,28 @@ if(isset($_POST["submit"])){
 	}
 }
 ?>
-	<h2>Prijava</h2>
-	<form action="login.php" method="POST">
-		<table>
-            <tr>
-                <td><label>Uporabniško ime</label></td><td><input type="text" name="username" /> <br/></td>
-            </tr>
-            <tr>
-                <td><label>Geslo</label></td><td><input type="password" name="password" /> <br/></td>
-            </tr>
-            <tr>
-                <td><input type="submit" name="submit" value="Pošlji" /> <br/></td>
-            </tr>
-            <label><?php echo $error; ?></label>
-        </table>
-	</form>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 mt-5">
+                <h2 class="text-center mb-4">Login</h2>
+                <form action="login.php" method="POST">
+                    <div class="form-group">
+                        <label for="username">Uporabniško ime</label>
+                        <input type="text" class="form-control" id="username" name="username" />
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Geslo</label>
+                        <input type="password" class="form-control" id="password" name="password" />
+                        <br>
+                    </div>
+                    <div class="form-group d-flex justify-content-center">
+                        <input type="submit" class="btn btn-success w-25 p-3" name="submit" value="Pošlji" />
+                    </div>
+                    <label><?php echo $error; ?></label>
+                </form>
+            </div>
+        </div>
+    </div>
 <?php
 include_once('footer.php');
 ?>

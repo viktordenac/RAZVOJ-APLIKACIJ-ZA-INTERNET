@@ -13,13 +13,13 @@ function get_ad($id){
     return null;
 }
 
-function get_categories($ad){
+function get_category($ad){
     $ad_id = $ad->id;
-    $query_ad_category = "SELECT fk_idCategory FROM ads_categories WHERE fk_idAds='$ad_id'";
+    $query = "SELECT fk_idCategory FROM ads_categories WHERE fk_idAds='$ad_id'";
     global $conn;
-    $result_ad_category = mysqli_query($conn, $query_ad_category);
+    $res = mysqli_query($conn, $query);
     $my_categories = array();
-    while ($row = mysqli_fetch_assoc($result_ad_category)) {
+    while ($row = mysqli_fetch_assoc($res)) {
         $category_id = $row['fk_idCategory'];
         $query_category = "SELECT value FROM category WHERE idCat='$category_id'";
         $result_category = mysqli_query($conn, $query_category);
@@ -30,13 +30,13 @@ function get_categories($ad){
 }
 
 if(!isset($_GET["id"])){
-    echo "Manjkajoči parametri.";
+    echo "Težava z GET id";
     die();
 }
 $id = $_GET["id"];
 $ad = get_ad($id);
 if($ad == null){
-    echo "Oglas ne obstaja.";
+    echo "Oglas z podanim ID-jem ne obstaja";
     die();
 }
 
@@ -64,12 +64,11 @@ if(!isset($_GET["id"])){
     die();
 }
 
-//Base64 koda za sliko (hexadecimalni zapis byte-ov iz datoteke)
-$img_data = base64_encode($ad->image);
+
 ?>
 <html>
 <head>
-        <title>Ad Page</title>
+        <title>Ads Page</title>
 </head>
     <style>
         img {
@@ -81,38 +80,25 @@ $img_data = base64_encode($ad->image);
     <div class="ad">
         <div class="container-fluid">
             <h4><?php echo $ad->title;?></h4>
-
-            <!--<p> <b>Kategorija:</b>
-                <?php
+            <?php
             global $conn;
             $query = "SELECT value FROM category WHERE idCat= '$ad->category_id'";
             $res = mysqli_query($conn, $query);
             $my_category = mysqli_fetch_assoc($res);
             echo $my_category['value'];
             ?>
-            </p>-->
-
-
             <p><b></b><?php echo "<b>Opis:</b> ".$ad->description;?></p>
             <p><?php echo "<img src='".$ad->image."'>"?></p>
             <p> <b>Kategorija:</b>
                 <?php
-                echo implode(", ", get_categories($ad));
+                echo implode(", ", get_category($ad));
                 ?>
             </p>
             <p><b>Published:</b> <?php echo $ad->username; ?></p>
             <p><b>Datum objave:</b> <?php echo $ad->lastUpdate ?></p>
-            <p><b>Število ogledov:</b> <?php echo $ad->views ?></p>
+            <p><b>Ogledov:</b> <?php echo $ad->views ?></p>
+            <a href="index.php"><button class="btn btn-outline-primary">Nazaj</button></a>
 
-            <?php
-            $previous_page = $_SERVER['HTTP_REFERER'];
-            if (strpos($previous_page, 'myAds.php')) {
-                echo '<a href="myAds.php"><button class="btn btn-outline-primary">Nazaj</button></a>';
-            }
-            else {
-                echo '<a href="index.php"><button class="btn btn-outline-primary">Nazaj</button></a>';
-            }
-            ?>
         </div>
     </div>
     <hr/>
