@@ -32,10 +32,18 @@ if(isset($_POST["submit"])){
 ?>
 	<h2>Prijava</h2>
 	<form action="login.php" method="POST">
-		<label>Uporabniško ime</label><input type="text" name="username" /> <br/>
-		<label>Geslo</label><input type="password" name="password" /> <br/>
-		<input type="submit" name="submit" value="Pošlji" /> <br/>
-		<label><?php echo $error; ?></label>
+		<table>
+            <tr>
+                <td><label>Uporabniško ime</label></td><td><input type="text" name="username" /> <br/></td>
+            </tr>
+            <tr>
+                <td><label>Geslo</label></td><td><input type="password" name="password" /> <br/></td>
+            </tr>
+            <tr>
+                <td><input type="submit" name="submit" value="Pošlji" /> <br/></td>
+            </tr>
+            <label><?php echo $error; ?></label>
+        </table>
 	</form>
 <?php
 include_once('footer.php');

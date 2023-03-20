@@ -64,13 +64,35 @@ if(isset($_POST["submit"])){
 ?>
 	<h2>Registracija</h2>
 	<form action="register.php" method="POST">
-		<label>Uporabniško ime</label><input type="text" name="username" /> <br/>
-		<label>Geslo</label><input type="password" name="password" /> <br/>
-		<label>Ponovi geslo</label><input type="password" name="repeat_password" /> <br/>
-        <label>Naslov</label><input type="naslov" name="naslov" /> <br/>
-        <label>Pošta</label><input type="posta" name="posta" /> <br/>
-        <label>Telefon</label><input type="tel" name="tel" /> <br/>
-		<input type="submit" name="submit" value="Pošlji" /> <br/>
+        <table>
+            <tr>
+                <td><label>Uporabniško ime:</label></td>
+                <td><input type="text" name="username" /> <br/></td>
+            </tr>
+            <tr>
+                <td><label>Geslo:</label></td>
+                <td><input type="password" name="password" /> <br/></td>
+            </tr>
+            <tr>
+                <td><label>Ponovi geslo:</label></td>
+                <td><input type="password" name="repeat_password" /> <br/></td>
+            </tr>
+            <tr>
+                <td><label>Naslov:</label></td>
+                <td><input type="naslov" name="naslov" /> <br/></td>
+            </tr>
+            <tr>
+                <td><label>Pošta:</label></td>
+                <td><input type="posta" name="posta" /> <br/></td>
+            </tr>
+            <tr>
+                <td><label>Telefon:</label></td>
+                <td><input type="tel" name="tel" /> <br/></td>
+            </tr>
+            <tr>
+                <td><input type="submit" name="submit" value="Pošlji" /> <br/></td>
+            </tr>
+        </table>
 		<label><?php echo $error; ?></label>
 	</form>
 <?php
